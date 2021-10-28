@@ -13,12 +13,12 @@ const cors = require("cors");
 //Conectamos con la db
 connect();
 
-
+//* Guardamos el puerto en una variable:
 const PORT = process.env.PORT || 3200;
+
 const app = express();
 
-//* Guardamos el puerto en una variable:
-const port = 3001;
+
 //Config app
 app.set("secretKey", "nodeRestApi"); // jwt secret token
 
