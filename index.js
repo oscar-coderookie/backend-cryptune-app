@@ -2,6 +2,8 @@ const express = require("express");
 const logger = require("morgan");
 //Importamos la conexion a la db
 const { connect } = require("./app/config/database");
+const dotenv = require('dotenv');
+dotenv.config()
 //Importamos las rutas
 const users = require("./app/api/routes/user.routes");
 //Otras importaciones
@@ -11,6 +13,8 @@ const cors = require("cors");
 //Conectamos con la db
 connect();
 
+
+const PORT = process.env.PORT || 3200;
 const app = express();
 
 //* Guardamos el puerto en una variable:
@@ -58,6 +62,6 @@ app.use((err, req, res, next) => {
 app.disable("x-powered-by");
 
 //Levantamos el servidor
-app.listen(port, () => {
+app.listen(PORT, () => {
   console.log("Node server listening on port 3001, visit http://localhost:3001");
 });
