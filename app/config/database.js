@@ -1,5 +1,5 @@
 //Requerimos dotenv para acceder a las variables de entorno
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 //Requerimos mongoose para comunicarnos con la bd
 const mongoose = require("mongoose");
