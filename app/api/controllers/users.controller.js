@@ -8,6 +8,46 @@ const jwt = require("jsonwebtoken");
 const HTTPSTATUSCODE = require("../../utils/httpStatusCode");
 
 // Codificamos las operaciones que se podran realizar con relacion a los usuarios
+const getAllUsers = async (req, res, next) => {
+  try {
+    if (req.query.page) {
+      //Se le añade paginación
+      const page = parseInt(req.query.page);
+      const skip = (page - 1) * 20;
+      const users = await User.find().skip(skip).limit(20);
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data: {users: users},
+      });
+    } else {
+      const users = await User.find();
+      return res.json({
+        status: 200,
+        message: HTTPSTATUSCODE[200],
+        data:{users: users},
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// Metodo para la busqueda de usuarios por ID
+const getUserById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const user = await User.findById(id);
+    return res.json({
+      status: 200,
+      message: HTTPSTATUSCODE[200],
+      data: { user: user },
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const createUser = async (req, res, next) => {
   try {
     const newUser = new User();
@@ -16,7 +56,6 @@ const createUser = async (req, res, next) => {
     newUser.email = req.body.email;
     newUser.password = req.body.password;
     //Pnt. mejora: comprobar si el user existe antes de guardar
-    
     const userDb = await newUser.save();
     
     //Pnt. mejora: autenticar directamente al usuario
@@ -77,5 +116,7 @@ const logout = (req, res, next) => {
 module.exports = {
   createUser,
   authenticate,
-  logout
+  logout,
+  getAllUsers,
+  getUserById
 }
