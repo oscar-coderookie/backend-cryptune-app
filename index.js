@@ -2,8 +2,8 @@ const express = require("express");
 const logger = require("morgan");
 //Importamos la conexion a la db
 const { connect } = require("./app/config/database");
-const dotenv = require('dotenv');
-dotenv.config()
+const dotenv = require("dotenv");
+dotenv.config();
 //Importamos las rutas
 const users = require("./app/api/routes/user.routes");
 //Otras importaciones
@@ -17,7 +17,6 @@ connect();
 const PORT = process.env.PORT || 3200;
 
 const app = express();
-
 
 //Config app
 app.set("secretKey", "nodeRestApi"); // jwt secret token
@@ -41,10 +40,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(logger("dev"));
 
-// routes
-app.get('/', (req, res, next) => {
-  res.send("this is a sample express application")
-})
+// rutas:
+app.get("/", (req, res, next) => {
+  try {
+    return res.send("Welcome to Cryptune.com Backend");
+  } catch (error) {
+    return next(error);
+  }
+});
+
 app.use("/users", users);
 
 app.use((req, res, next) => {
