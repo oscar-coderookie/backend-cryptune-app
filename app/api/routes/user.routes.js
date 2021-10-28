@@ -9,7 +9,7 @@ router.get("/:id", getUserById)
 router.post("/register", createUser);
 router.post("/authenticate", authenticate);
 //le añadimos el middleware para que solo sea accesible si el user esta logueado
-router.post("/logout", [isAuth], logout)
-router.get("/check-session", checkSession);
+router.post("/logout", logout)
+router.get("/checksession", checkSession);
 
 module.exports = router;
