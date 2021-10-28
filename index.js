@@ -12,8 +12,10 @@ const cors = require("cors");
 connect();
 
 const app = express();
-//Config app
 
+//* Guardamos el puerto en una variable:
+const port = 3001;
+//Config app
 app.set("secretKey", "nodeRestApi"); // jwt secret token
 
 app.use((req, res, next) => {
@@ -36,6 +38,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 
 // routes
+app.get('/', (req, res, next) => {
+  res.send("this is a sample express application")
+})
 app.use("/users", users);
 
 app.use((req, res, next) => {
@@ -53,6 +58,6 @@ app.use((err, req, res, next) => {
 app.disable("x-powered-by");
 
 //Levantamos el servidor
-app.listen(3001, () => {
-  console.log("Node server listening on port 3001");
+app.listen(port, () => {
+  console.log("Node server listening on port 3001, visit http://localhost:3001");
 });
