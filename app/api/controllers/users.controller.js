@@ -1,4 +1,4 @@
-// Cargamos el modelo 
+// Cargamos el modelo
 const User = require("../models/User");
 // Cargamos el módulo de bcrypt
 const bcrypt = require("bcrypt");
@@ -18,14 +18,14 @@ const getAllUsers = async (req, res, next) => {
       return res.json({
         status: 200,
         message: HTTPSTATUSCODE[200],
-        data: {users: users},
+        data: { users: users },
       });
     } else {
       const users = await User.find();
       return res.json({
         status: 200,
         message: HTTPSTATUSCODE[200],
-        data:{users: users},
+        data: { users: users },
       });
     }
   } catch (err) {
@@ -57,32 +57,32 @@ const createUser = async (req, res, next) => {
     newUser.password = req.body.password;
     //Pnt. mejora: comprobar si el user existe antes de guardar
     const userDb = await newUser.save();
-    
+
     //Pnt. mejora: autenticar directamente al usuario
 
     return res.json({
       status: 201,
       message: HTTPSTATUSCODE[201],
-      data: null
+      data: null,
     });
   } catch (err) {
     return next(err);
   }
-}
+};
 
 const authenticate = async (req, res, next) => {
   try {
     //Buscamos al user en bd
-    const userInfo = await User.findOne({ email: req.body.email })
+    const userInfo = await User.findOne({ email: req.body.email });
     //Comparamos la contraseña
     if (bcrypt.compareSync(req.body.password, userInfo.password)) {
       //eliminamos la contraseña del usuario
-      userInfo.password = null
+      userInfo.password = null;
       //creamos el token con el id y el name del user
       const token = jwt.sign(
         {
           id: userInfo._id,
-          name: userInfo.name
+          name: userInfo.name,
         },
         req.app.get("secretKey"),
         { expiresIn: "1h" }
@@ -99,24 +99,40 @@ const authenticate = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-}
+};
 //funcion logout, iguala el token a null.
 const logout = (req, res, next) => {
   try {
     return res.json({
       status: 200,
       message: HTTPSTATUSCODE[200],
-      token: null
+      token: null,
     });
   } catch (err) {
-    return next(err)
+    return next(err);
   }
-}
+};
+
+const checkSession = (req, res, next) => {
+  try {
+    if (req.user) {
+      let userRegister = req.user;
+      userRegister.password = null;
+
+      return res.status(200).json(userRegister);
+    } else {
+      return res.status(401).json({ message: "No user found" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   createUser,
   authenticate,
   logout,
   getAllUsers,
-  getUserById
-}
+  getUserById,
+  checkSession,
+};
